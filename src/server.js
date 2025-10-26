@@ -1,17 +1,27 @@
 import express from "express";
-import dotenv from 'dotenv';
-import connectDB from './configs/db.js';
+import dotenv from "dotenv";
+import connectDB from "./configs/db.js";
+import cors from "cors";
 
 dotenv.config();
+const PORT = process.env.PORT;
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:5173", // allow frontend
+    credentials: true, // if cookies/auth headers are needed
+  })
+);
+
 app.get("/", (req, res) => {
-    res.send("API Load Successfully")
-})
+  console.log(`A ${req.method} request was sent`);
+  res.json({ message: "Successful" });
+});
 
 connectDB().then(() => {
-    app.listen(process.env.PORT, () => {
-        console.log("App started at: http://localhost:8080")
-    })
-})
+  app.listen(PORT, () => {
+    console.log(`App started at: http://localhost:${PORT}`);
+  });
+});
