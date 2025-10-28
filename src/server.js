@@ -2,11 +2,16 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./configs/db.js";
 import cors from "cors";
+import bcrypt from "bcrypt";
+import usersRoute from "./routes/userRoutes.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
 
 const app = express();
+app.use(express.json());
+
+app.use("/users", usersRoute);
 
 app.use(
   cors({
@@ -14,11 +19,6 @@ app.use(
     credentials: true, // if cookies/auth headers are needed
   })
 );
-
-app.get("/", (req, res) => {
-  console.log(`A ${req.method} request was sent`);
-  res.json({ message: "Successful" });
-});
 
 connectDB().then(() => {
   app.listen(PORT, () => {
