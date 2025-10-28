@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./configs/db.js";
 import cors from "cors";
-import bcrypt from "bcrypt";
 import usersRoute from "./routes/userRoutes.js";
 
 dotenv.config();
