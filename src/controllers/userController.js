@@ -20,3 +20,22 @@ export async function addNewUser(req, res) {
     res.status(500).json({ message: "Error adding user" });
   }
 }
+
+export async function lookUpUser(req, res) {
+  try {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const user = await User.findOne({ username });
+    const match = await bcrypt.compare(password, user.password);
+
+    match
+      ? res.json({
+          message: "User found successfully",
+          user,
+        })
+      : res.json({ message: "User not found." });
+  } catch (error) {
+    res.status(404).json({ message: "Error retrieving user" });
+  }
+}
