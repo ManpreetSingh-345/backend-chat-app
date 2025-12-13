@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 export async function addNewUser(req, res) {
   try {
@@ -8,7 +9,25 @@ export async function addNewUser(req, res) {
     const email = req.body.email;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({ username, password: hashedPassword, email });
+    const payload = {
+      username,
+      password,
+      email,
+    };
+
+    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: 60 * 15,
+    });
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "7 days",
+    });
+
+    const user = new User({
+      username,
+      password: hashedPassword,
+      email,
+      refreshToken,
+    });
 
     const savedUser = await user.save();
 

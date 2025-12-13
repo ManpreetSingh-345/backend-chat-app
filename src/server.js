@@ -9,12 +9,13 @@ const PORT = process.env.PORT;
 
 const app = express();
 
-app.use(express.json()); // Middleware --> handles JSON parsing
+app.use(express.json());
+app.enable("trust proxy");
 
 if (process.env.NODE_ENV === "development") {
   app.use(
     cors({
-      origin: "http://localhost:5173", // allow frontend
+      origin: `http://localhost:${PORT}`, // allow frontend
       credentials: true, // if cookies/auth headers are needed
     })
   );
