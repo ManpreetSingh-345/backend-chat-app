@@ -9,18 +9,26 @@ export async function addNewUser(req, res) {
     const email = req.body.email;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const payload = {
+    const accessPayload = {
       username,
       password,
       email,
     };
 
-    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: 60 * 15,
-    });
-    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: "7 days",
-    });
+    const accessToken = jwt.sign(
+      accessPayload,
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: 60 * 15,
+      }
+    );
+    const refreshToken = jwt.sign(
+      { username },
+      process.env.REFRESH_TOKEN_SECRET,
+      {
+        expiresIn: 60,
+      }
+    );
 
     const user = new User({
       username,
@@ -34,6 +42,7 @@ export async function addNewUser(req, res) {
     res.json({
       message: "Added new user successfully",
       data: savedUser,
+      accessToken,
     });
   } catch (error) {
     res.status(500).json({ message: "Error adding user" });

@@ -15,7 +15,7 @@ app.enable("trust proxy");
 if (process.env.NODE_ENV === "development") {
   app.use(
     cors({
-      origin: `http://localhost:${PORT}`, // allow frontend
+      origin: `http://localhost:5173`, // allow frontend
       credentials: true, // if cookies/auth headers are needed
     })
   );
