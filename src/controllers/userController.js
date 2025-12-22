@@ -9,32 +9,10 @@ export async function addNewUser(req, res) {
     const email = req.body.email;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const accessPayload = {
-      username,
-      password,
-      email,
-    };
-
-    const accessToken = jwt.sign(
-      accessPayload,
-      process.env.ACCESS_TOKEN_SECRET,
-      {
-        expiresIn: 60 * 15,
-      }
-    );
-    const refreshToken = jwt.sign(
-      { username },
-      process.env.REFRESH_TOKEN_SECRET,
-      {
-        expiresIn: 60,
-      }
-    );
-
     const user = new User({
       username,
       password: hashedPassword,
       email,
-      refreshToken,
     });
 
     const savedUser = await user.save();
@@ -57,12 +35,41 @@ export async function lookUpUser(req, res) {
     const user = await User.findOne({ username });
     const match = await bcrypt.compare(password, user.password);
 
-    match
-      ? res.json({
-          message: "User found successfully",
-          user,
-        })
-      : res.json({ message: "User not found." });
+    if (match) {
+      const accessPayload = {
+        username,
+      };
+      const accessToken = jwt.sign(
+        accessPayload,
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: 60 * 15,
+        }
+      );
+      const refreshToken = jwt.sign(
+        { username },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+          expiresIn: "24h",
+        }
+      );
+
+      user.refreshToken = refreshToken;
+      await user.save();
+
+      res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      });
+      res.json({
+        message: "User found successfully",
+        user,
+        accessToken,
+      });
+    } else {
+      res.json({ message: "User not found." });
+    }
   } catch (error) {
     res.status(404).json({ message: "Error retrieving user" });
   }
