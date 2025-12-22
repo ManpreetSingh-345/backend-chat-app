@@ -2,7 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./configs/db.js";
 import cors from "cors";
-import usersRoute from "./routes/userRoutes.js";
+import userRoute from "./routes/userRoutes.js";
+import authRoute from "./routes/authRoutes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -10,6 +12,7 @@ const PORT = process.env.PORT;
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.enable("trust proxy");
 
 if (process.env.NODE_ENV === "development") {
@@ -21,7 +24,8 @@ if (process.env.NODE_ENV === "development") {
   );
 }
 
-app.use("/users", usersRoute);
+app.use("/users", userRoute);
+app.use("/auth", authRoute);
 
 // Start serving only after connecting to DB
 connectDB().then(() => {

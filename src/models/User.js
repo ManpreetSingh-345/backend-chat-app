@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  accessToken: {
+  refreshToken: {
     type: String,
   },
 });

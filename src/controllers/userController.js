@@ -15,12 +15,13 @@ export async function addNewUser(req, res) {
       email,
     });
 
+    console.log("ran");
+
     const savedUser = await user.save();
 
     res.json({
       message: "Added new user successfully",
       data: savedUser,
-      accessToken,
     });
   } catch (error) {
     res.status(500).json({ message: "Error adding user" });
@@ -57,7 +58,7 @@ export async function lookUpUser(req, res) {
       user.refreshToken = refreshToken;
       await user.save();
 
-      res.cookie("jwt", refreshToken, {
+      res.cookie("token", refreshToken, {
         httpOnly: true,
         secure: false,
         sameSite: "Lax",
