@@ -43,7 +43,7 @@ export async function lookUpUser(req, res) {
         accessPayload,
         process.env.ACCESS_TOKEN_SECRET,
         {
-          expiresIn: 60 * 15,
+          expiresIn: 10,
         }
       );
       const refreshToken = jwt.sign(
