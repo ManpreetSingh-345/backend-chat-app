@@ -11,16 +11,19 @@ export async function getNewAccessToken(req, res) {
     }
 
     const newAccessToken = jwt.sign(
-      { username: req.body.name },
+      { username: foundUser.username },
       process.env.ACCESS_TOKEN_SECRET,
       {
         expiresIn: 5,
       }
     );
 
+    const name = decoded.username;
+
     res.json({
       message: "User's access token refreshed successfully",
       newAccessToken,
+      name,
     });
   });
 }

@@ -51,7 +51,7 @@ export async function lookUpUser(req, res) {
         { username },
         process.env.REFRESH_TOKEN_SECRET,
         {
-          expiresIn: 10, // Testing purposes
+          expiresIn: 60, // Testing purposes
         }
       );
 
