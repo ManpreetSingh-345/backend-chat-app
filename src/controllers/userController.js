@@ -44,14 +44,14 @@ export async function lookUpUser(req, res) {
         accessPayload,
         process.env.ACCESS_TOKEN_SECRET,
         {
-          expiresIn: 10,
+          expiresIn: 5, // Testing purposes
         }
       );
       const refreshToken = jwt.sign(
         { username },
         process.env.REFRESH_TOKEN_SECRET,
         {
-          expiresIn: "24h",
+          expiresIn: 10, // Testing purposes
         }
       );
 

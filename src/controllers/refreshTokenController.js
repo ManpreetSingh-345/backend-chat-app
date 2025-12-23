@@ -5,22 +5,24 @@ export async function getNewAccessToken(req, res) {
   const token = req.cookies.token;
   const foundUser = await User.findOne({ refreshToken: token });
 
-  console.log(foundUser);
-
-  if (!foundUser) {
-    return res.sendStatus(401);
-  }
-
-  const newAccessToken = jwt.sign(
-    { username: req.body.name },
-    process.env.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: 5,
+  jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+    if (err) {
+      return res.sendStatus(401);
     }
-  );
 
-  res.json({
-    message: "User's access token refreshed successfully",
-    newAccessToken,
+    console.log(foundUser);
+
+    const newAccessToken = jwt.sign(
+      { username: req.body.name },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: 5,
+      }
+    );
+
+    res.json({
+      message: "User's access token refreshed successfully",
+      newAccessToken,
+    });
   });
 }
