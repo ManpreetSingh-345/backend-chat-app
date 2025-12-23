@@ -10,8 +10,6 @@ export async function getNewAccessToken(req, res) {
       return res.sendStatus(401);
     }
 
-    console.log(foundUser);
-
     const newAccessToken = jwt.sign(
       { username: req.body.name },
       process.env.ACCESS_TOKEN_SECRET,
