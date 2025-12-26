@@ -4,7 +4,9 @@ import connectDB from "./configs/db.js";
 import cors from "cors";
 import userRoute from "./routes/userRoutes.js";
 import authRoute from "./routes/authRoutes.js";
+import chatroomRoute from "./routes/chatroomRoutes.js";
 import cookieParser from "cookie-parser";
+import { verifyAuth } from "./middleware/verifyAuth.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -26,6 +28,7 @@ if (process.env.NODE_ENV === "development") {
 
 app.use("/users", userRoute);
 app.use("/auth", authRoute);
+app.use("/chat", verifyAuth, chatroomRoute);
 
 // Start serving only after connecting to DB
 connectDB().then(() => {

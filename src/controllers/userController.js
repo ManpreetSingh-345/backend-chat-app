@@ -15,8 +15,6 @@ export async function addNewUser(req, res) {
       email,
     });
 
-    console.log("ran");
-
     const savedUser = await user.save();
 
     res.json({
