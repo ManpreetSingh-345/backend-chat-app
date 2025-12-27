@@ -73,3 +73,20 @@ export async function lookUpUser(req, res) {
     res.status(404).json({ message: "Error retrieving user" });
   }
 }
+
+export async function logoutUser(req, res) {
+  if (!req.cookies) return res.sendStatus(204);
+
+  const token = req.cookies.token;
+  const foundUser = await User.findOne({ refreshToken: token });
+
+  if (!foundUser) {
+    res.clearCookie("token", { httpOnly: true, sameSite: "lax" });
+    res.sendStatus(204);
+  }
+
+  foundUser.refreshToken = "";
+
+  res.clearCookie("token", { httpOnly: true, sameSite: "lax" });
+  res.sendStatus(204);
+}
